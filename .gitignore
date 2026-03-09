@@ -1,0 +1,13 @@
+Folder.DotSettings.user
+.idea/
+obj/
+bin/
+publish/
+dist/
+
+GameReplays/
+
+# Sensitive — pointer offsets and memory notes
+MEMORY.md
+pointers.md
+Memory/Offsets.cs

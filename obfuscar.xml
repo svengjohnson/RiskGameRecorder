@@ -1,0 +1,26 @@
+<?xml version='1.0'?>
+<Obfuscator>
+  <Var name="InPath"          value="bin\Release\net8.0-windows\win-x64" />
+  <Var name="OutPath"         value="bin\Release\net8.0-windows\win-x64\obfuscated" />
+  <Var name="HideStrings"     value="true" />
+  <Var name="UseUnicodeNames" value="true" />
+  <Var name="RenameFields"    value="true" />
+  <Var name="RenameProperties" value="true" />
+  <Var name="RenameEvents"    value="true" />
+
+  <Module file="$(InPath)\RiskGameRecorder.dll">
+    <!--
+      XAML code-behind types are referenced by string name in compiled BAML.
+      Renaming them causes a runtime crash — skip entirely.
+    -->
+    <SkipType name="RiskGameRecorder.App" />
+    <SkipType name="RiskGameRecorder.GameRecorderWindow" />
+
+    <!--
+      ViewModel public properties are used in XAML {Binding} expressions.
+      Keep property names but allow everything else to be renamed.
+    -->
+    <SkipType name="RiskGameRecorder.GameRecorderViewModel" keepproperties="true" />
+    <SkipType name="RiskGameRecorder.MainViewModel"         keepproperties="true" />
+  </Module>
+</Obfuscator>

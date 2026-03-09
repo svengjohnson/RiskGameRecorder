@@ -1,0 +1,114 @@
+
+<Window x:Class="RiskGameRecorder.GameRecorderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Game Recorder" SizeToContent="WidthAndHeight" ResizeMode="NoResize"
+        Background="{StaticResource DarkBg}">
+    <StackPanel Margin="20" MinWidth="300">
+
+        <!-- Session section -->
+        <TextBlock Text="SESSION"
+                   FontSize="10" FontWeight="Bold" Foreground="{StaticResource DarkFgMuted}"
+                   Margin="0,0,0,8"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Status"   Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Text="{Binding RecorderStatus}" FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="Time"     Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding TimeDisplay}"    FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="4" Grid.Column="0" Text="Round"    Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding Round}"          FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="6" Grid.Column="0" Text="Turn"     Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="6" Grid.Column="2" Text="{Binding CurrentPlayer}"  FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="8" Grid.Column="0" Text="Game ID"  Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="8" Grid.Column="2" Text="{Binding GameId}"         FontWeight="SemiBold"/>
+        </Grid>
+
+        <Separator Margin="0,14" Background="{StaticResource DarkBorder}"/>
+
+        <!-- Config section -->
+
+        <TextBlock Text="GAME CONFIG"
+                   FontSize="10" FontWeight="Bold" Foreground="{StaticResource DarkFgMuted}"
+                   Margin="0,0,0,8"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="4"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0"  Grid.Column="0" Text="Map"        Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="0"  Grid.Column="2" Text="{Binding Map}"               FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="2"  Grid.Column="0" Text="Game Mode"  Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="2"  Grid.Column="2" Text="{Binding GameMode}"          FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="4"  Grid.Column="0" Text="Alliances"  Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="4"  Grid.Column="2" Text="{Binding Alliances}"         FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="6"  Grid.Column="0" Text="Fog"        Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="6"  Grid.Column="2" Text="{Binding Fog}"              FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="8"  Grid.Column="0" Text="Blizzards"  Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="8"  Grid.Column="2" Text="{Binding Blizzards}"         FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="10" Grid.Column="0" Text="Portals"    Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="10" Grid.Column="2" Text="{Binding Portals}"           FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="12" Grid.Column="0" Text="Card Type"  Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="12" Grid.Column="2" Text="{Binding CardType}"          FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="14" Grid.Column="0" Text="Dice"       Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="14" Grid.Column="2" Text="{Binding Dice}"              FontWeight="SemiBold"/>
+
+            <TextBlock Grid.Row="16" Grid.Column="0" Text="Inactivity" Foreground="{StaticResource DarkFgMuted}"/>
+            <TextBlock Grid.Row="16" Grid.Column="2" Text="{Binding InactivityBehavior}" FontWeight="SemiBold"/>
+        </Grid>
+
+        <Separator Margin="0,14" Background="{StaticResource DarkBorder}"/>
+
+        <Button Content="Open recordings directory" HorizontalAlignment="Stretch"
+                Click="OpenRecordingsDirectory" Padding="10,6"/>
+
+    </StackPanel>
+</Window>
