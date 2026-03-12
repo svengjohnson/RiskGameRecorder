@@ -48,7 +48,7 @@ public sealed class GameRecorder
         switch (_state)
         {
             case State.Idle:
-                if (snap.State == GameState.None) _seenNoneSinceLastGame = true;
+                if (snap.State is GameState.None or GameState.InLobby) _seenNoneSinceLastGame = true;
                 if (snap.State == GameState.InGame && _seenNoneSinceLastGame)
                 {
                     _activeGameId = IsValidGameId(snap.GameId) ? snap.GameId : "ffffffff" + Guid.NewGuid().ToString().Substring(8);
