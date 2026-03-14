@@ -63,6 +63,7 @@ Make sure it's launched before the Risk game starts. And keep it running until t
   "dice": "BalancedBlitz",
   "inactivityBehavior": "Neutral",
   "portals": "Off",
+  "localPlayer" : 1, // the player actually playing the game - will match the dict key of the players{} below.
   "gameDuration": 1229300 // how long the game took, in milliseconds (rounded to 50ms)
 },
 ```
