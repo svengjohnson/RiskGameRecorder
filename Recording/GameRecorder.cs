@@ -125,6 +125,10 @@ public sealed class GameRecorder
                 Dice               = _config.Dice,
                 InactivityBehavior = _config.InactivityBehavior,
                 Portals            = _config.Portals,
+                LocalPlayer        = snap.Players
+                    .Where(p => p.IsLocal)
+                    .Select(p => (int?)int.Parse(PlayerId(p)))
+                    .FirstOrDefault(),
             },
             Players = snap.Players
                 .Select((p, i) => (Id: (i + 1).ToString(), Player: new RecordedPlayer

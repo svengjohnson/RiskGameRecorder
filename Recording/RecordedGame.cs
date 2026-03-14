@@ -43,6 +43,7 @@ public sealed class RecordedGameInfo
     [JsonPropertyName("dice")]        public string Dice               { get; set; } = "";
     [JsonPropertyName("inactivityBehavior")] public string InactivityBehavior { get; set; } = "";
     [JsonPropertyName("portals")]      public string Portals            { get; set; } = "";
+    [JsonPropertyName("localPlayer")]   public int?   LocalPlayer       { get; set; }
     [JsonPropertyName("gameDuration")] public long   GameDuration      { get; set; }
 }
 

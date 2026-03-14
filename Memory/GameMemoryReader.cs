@@ -236,6 +236,13 @@ public sealed class GameMemoryReader
             var automatedBuf = new byte[1];
             Win32.ReadProcessMemory(_process, p + Offsets.OFFSET_IS_CURRENTLY_AUTOMATED, automatedBuf, 1, out _);
             model.IsCurrentlyAutomated = automatedBuf[0] != 0;
+            var photonPlayer = ReadPtr(p + Offsets.OFFSET_PLAYERS_PHOTON);
+            if (photonPlayer != IntPtr.Zero)
+            {
+                var localBuf = new byte[1];
+                Win32.ReadProcessMemory(_process, photonPlayer + Offsets.PHOTON_PLAYER_IS_LOCAL, localBuf, 1, out _);
+                model.IsLocal = localBuf[0] != 0;
+            }
             var (terrs, conts) = ReadPlayerMapData(p);
             model.Territories    = terrs;
             model.Continents     = conts;

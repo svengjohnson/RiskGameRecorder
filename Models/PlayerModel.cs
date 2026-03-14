@@ -17,6 +17,7 @@ public sealed class PlayerModel
     public bool IsBottedOut { get; set; }
     public bool IsAI { get; set; }
     public bool IsCurrentlyAutomated { get; set; }
+    public bool IsLocal { get; set; }
     public int? Units { get; set; }
     public int? CapitalUnits { get; set; }
     public int? TerritoryCount { get; set; }
