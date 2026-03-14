@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using RiskGameRecorder.Memory;
 using RiskGameRecorder.Models;
 
@@ -11,6 +14,8 @@ namespace RiskGameRecorder.Recording;
 
 public sealed class GameRecorder
 {
+    private static readonly HttpClient _httpClient = new();
+
     private enum State { Idle, Initializing, Recording }
 
     private State         _state          = State.Idle;
@@ -376,6 +381,44 @@ public sealed class GameRecorder
         var json = JsonSerializer.Serialize(game, new JsonSerializerOptions { WriteIndented = true });
         File.WriteAllText(Path.Combine(dir, filename), json);
         Debug.WriteLine($"[GameRecorder] Saved to {filename}");
+
+        _ = UploadReplayAsync(json, filename);
+    }
+
+    static async System.Threading.Tasks.Task UploadReplayAsync(string json, string filename)
+    {
+        try
+        {
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("https://risk-replay.sjohnson.io/api/upload", content);
+            response.EnsureSuccessStatusCode();
+
+            var result = await response.Content.ReadAsStringAsync();
+            var upload = JsonSerializer.Deserialize<UploadResponse>(result);
+
+            if (upload?.Url != null)
+            {
+                var fullUrl = $"https://risk-replay.sjohnson.io{upload.Url}";
+                Debug.WriteLine($"[GameRecorder] Uploaded {filename} → {fullUrl} (exists: {upload.Exists})");
+                Process.Start(new ProcessStartInfo { FileName = fullUrl, UseShellExecute = true });
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"[GameRecorder] Upload failed for {filename}: {ex.Message}");
+        }
+    }
+
+    private sealed class UploadResponse
+    {
+        [JsonPropertyName("gameId")]
+        public string? GameId { get; set; }
+
+        [JsonPropertyName("url")]
+        public string? Url { get; set; }
+
+        [JsonPropertyName("exists")]
+        public bool Exists { get; set; }
     }
 
     void Reset()
