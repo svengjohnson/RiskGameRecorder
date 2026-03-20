@@ -4,7 +4,7 @@ obj/
 bin/
 publish/
 dist/
-
+.claude/
 GameReplays/
 
 # Sensitive — pointer offsets and memory notes

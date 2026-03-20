@@ -402,6 +402,12 @@ public sealed class GameMemoryReader
         bool isAlliance = flagsBuf[2] != 0;
 
         int cardMode = ReadInt32(gmStatic + Offsets.GM_TERRITORY_CARD_CONFIG);
+        int setCountMode = cardMode switch
+        {
+            1 => ReadInt32(gmStatic + Offsets.GM_TERRITORY_CARD_CONFIG + Offsets.CARD_PROGRESSIVE_SET_COUNT_MODE),
+            2 => ReadInt32(gmStatic + Offsets.GM_TERRITORY_CARD_CONFIG + Offsets.CARD_EXPONENTIAL_SET_COUNT_MODE),
+            _ => 0
+        };
 
         string mapName = "";
         var map = GetMap();
@@ -422,7 +428,7 @@ public sealed class GameMemoryReader
             GameId:             ReadGameId(),
             MapName:            mapName,
             GameMode:           GameModeString(gameMode),
-            CardType:           CardModeString(cardMode),
+            CardType:           CardModeString(cardMode, setCountMode),
             Dice:               diceRolls == 1 ? "BalancedBlitz" : "TrueRandom",
             InactivityBehavior: inactivity == 0 ? "Automated" : "Neutral",
             Portals:            portals switch { 1 => "Static", 2 => "Dynamic", _ => "Off" },
@@ -557,8 +563,11 @@ public sealed class GameMemoryReader
         9 => "Assassin",       _ => $"Unknown{v}"
     };
 
-    static string CardModeString(int v) => v switch
+    static string CardModeString(int mode, int setCountMode) => mode switch
     {
-        0 => "Fixed", 1 => "Progressive", 2 => "Exponential", _ => $"Unknown{v}"
+        0 => "Fixed",
+        1 => setCountMode == 1 ? "ProgressivePerPlayer" : "Progressive",
+        2 => setCountMode == 1 ? "ExponentialPerPlayer" : "Exponential",
+        _ => $"Unknown{mode}"
     };
 }
