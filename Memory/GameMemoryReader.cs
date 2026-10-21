@@ -66,9 +66,9 @@ public sealed class GameMemoryReader
     {
         var pnStatic = ReadPtr(ReadPtr(_gameAssembly + (int)Offsets.PHOTON_NETWORK_STATIC) + Offsets.OFFSET_SINGLETON);
         if (pnStatic == IntPtr.Zero) return "";
-        var peer = ReadPtr(pnStatic + Offsets.PHOTON_NETWORKING_PEER);
-        if (peer == IntPtr.Zero) return "";
-        var room = ReadPtr(peer + Offsets.NETWORKING_PEER_ROOM);
+        var client = ReadPtr(pnStatic + Offsets.PHOTON_NETWORKING_CLIENT);
+        if (client == IntPtr.Zero) return "";
+        var room = ReadPtr(client + Offsets.NETWORKING_CLIENT_ROOM);
         if (room == IntPtr.Zero) return "";
         return ReadIl2CppString(ReadPtr(room + Offsets.ROOM_NAME));
     }
@@ -228,10 +228,13 @@ public sealed class GameMemoryReader
         if (withIngameData)
         {
             model.LobbyIndex = ReadInt32(p + Offsets.OFFSET_LOBBY_INDEX);
-            var flagBuf = new byte[2];
-            Win32.ReadProcessMemory(_process, p + Offsets.OFFSET_IS_QUIT, flagBuf, 2, out _);
-            model.IsQuit               = flagBuf[0] != 0;
-            model.IsBottedOut          = flagBuf[1] != 0;
+            var activity = ReadPtr(p + Offsets.OFFSET_ACTIVITY);
+            if (activity != IntPtr.Zero)
+            {
+                int activityState = ReadInt32(activity + Offsets.ACTIVITY_STATE);
+                model.IsQuit      = activityState == Offsets.ACTIVITY_STATE_SURRENDERED;
+                model.IsBottedOut = activityState == Offsets.ACTIVITY_STATE_BOT_OUT;
+            }
             model.IsAI                 = ReadPtr(p + Offsets.OFFSET_AI) != IntPtr.Zero;
             var automatedBuf = new byte[1];
             Win32.ReadProcessMemory(_process, p + Offsets.OFFSET_IS_CURRENTLY_AUTOMATED, automatedBuf, 1, out _);
@@ -390,10 +393,15 @@ public sealed class GameMemoryReader
         var gmStatic = ReadPtr(ReadPtr(_gameAssembly + (int)Offsets.GAME_MANAGER_STATIC) + Offsets.OFFSET_SINGLETON);
         if (gmStatic == IntPtr.Zero) return null;
 
-        int gameMode  = ReadInt32(gmStatic + Offsets.GM_GAME_MODE);
-        int diceRolls = ReadInt32(gmStatic + Offsets.GM_DICE_ROLLS);
-        int portals   = ReadInt32(gmStatic + Offsets.GM_PORTALS);
-        int inactivity = ReadInt32(gmStatic + Offsets.GM_INACTIVITY_BEHAVIOR);
+        var enumBuf = new byte[1];
+        Win32.ReadProcessMemory(_process, gmStatic + Offsets.GM_GAME_MODE, enumBuf, 1, out _);
+        int gameMode = enumBuf[0];
+        Win32.ReadProcessMemory(_process, gmStatic + Offsets.GM_DICE_ROLLS, enumBuf, 1, out _);
+        int diceRolls = enumBuf[0];
+        Win32.ReadProcessMemory(_process, gmStatic + Offsets.GM_PORTALS, enumBuf, 1, out _);
+        int portals = enumBuf[0];
+        Win32.ReadProcessMemory(_process, gmStatic + Offsets.GM_INACTIVITY_BEHAVIOR, enumBuf, 1, out _);
+        int inactivity = enumBuf[0];
 
         var flagsBuf = new byte[3];
         Win32.ReadProcessMemory(_process, gmStatic + Offsets.GM_IS_FOG_OF_WAR, flagsBuf, 3, out _);
@@ -517,7 +525,6 @@ public sealed class GameMemoryReader
             if (terrArray != IntPtr.Zero)
             {
                 int count = ReadInt32(terrArray + Offsets.ARRAY_LENGTH);
-                var buf4  = new byte[4];
                 var buf1  = new byte[1];
                 for (int i = 0; i < count && count <= 512; i++)
                 {
@@ -532,8 +539,8 @@ public sealed class GameMemoryReader
                     int units = ReadObscuredInt(t + Offsets.TERRITORY_UNITS);
                     Win32.ReadProcessMemory(_process, t + Offsets.TERRITORY_IS_CAPITAL, buf1, 1, out _);
                     bool isCapital = buf1[0] != 0;
-                    Win32.ReadProcessMemory(_process, t + Offsets.TERRITORY_PORTAL_STATE, buf4, 4, out _);
-                    int portalState = BitConverter.ToInt32(buf4, 0);
+                    Win32.ReadProcessMemory(_process, t + Offsets.TERRITORY_PORTAL_STATE, buf1, 1, out _);
+                    int portalState = buf1[0];
 
                     mapState.Add(new TerritorySnapshot(
                         TerritoryName: ReadIl2CppString(ReadPtr(t + Offsets.TERRITORY_NAME)).Trim(),
